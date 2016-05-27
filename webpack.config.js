@@ -5,7 +5,8 @@ const NpmInstallPlugin = require('npm-install-webpack-plugin');
 
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
-  app: path.join(__dirname, 'app'),
+  app: path.join(__dirname, 'app/'),
+  images: path.join(__dirname, 'images'),
   build: path.join(__dirname, 'build')
 };
 
@@ -35,13 +36,18 @@ const common = {
         include: PATHS.app
       },
       {
-      test: /\.json$/,
-      // We could restrict using json-loader only on .json files in the
-      // node_modules/pixi.js directory, but the ability to load .json files
-      // could be useful elsewhere in our app, so I usually don't.
-      //include: path.resolve(__dirname, 'node_modules/pixi.js'),
-      loaders: ['json'],
-      include: PATHS.app
+        test: /\.json$/,
+        // We could restrict using json-loader only on .json files in the
+        // node_modules/pixi.js directory, but the ability to load .json files
+        // could be useful elsewhere in our app, so I usually don't.
+        //include: path.resolve(__dirname, 'node_modules/pixi.js'),
+        loaders: ['json'],
+        include: PATHS.app
+     },
+     { 
+       test: /\.(png|jpg|jpeg|gif|woff)$/,
+       loader: 'url-loader',
+       include: PATHS.images
      }
     ],
     // The next errors I encountered were all like:
@@ -64,7 +70,7 @@ const common = {
     // the node_modules/pixi.js directory so it won't slow us down too much.
     postLoaders: [
       {
-        include: path.resolve(__dirname, 'node_modules/pixi.js'),
+        include: [PATHS.app, path.resolve(__dirname, 'node_modules/pixi.js')],
         loader: 'transform?brfs'
       }
     ]
