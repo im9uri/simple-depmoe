@@ -1,5 +1,4 @@
 let PIXI = require('pixi.js');
-let DisplacementFilter2 = require('./displacement/DisplacementFilter2.js');
 let DepthPerspectiveFilter = require('./DepthPerspective/DepthPerspectiveFilter.js');
 
 import testPNG from '../../images/mango_image.jpg';
