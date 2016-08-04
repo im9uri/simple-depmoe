@@ -28,6 +28,7 @@
   THE SOFTWARE.
 
 */
+import PIXI from 'pixi.js';
 let fs = require('fs');
 
 function DepthPerspectiveFilter(texture)
@@ -67,7 +68,6 @@ function DepthPerspectiveFilter(texture)
 
 DepthPerspectiveFilter.prototype = Object.create(PIXI.AbstractFilter.prototype);
 DepthPerspectiveFilter.prototype.constructor = DepthPerspectiveFilter;
-module.exports = DepthPerspectiveFilter;
 
 DepthPerspectiveFilter.prototype.onTextureLoaded = function()
 {
@@ -132,7 +132,7 @@ Object.defineProperties(DepthPerspectiveFilter.prototype, {
             this.uniforms.focus.value = Math.min(1,Math.max(0,value));
         }
     }
-}); 
+});
 
 /**
  * Image enlargment
@@ -167,3 +167,5 @@ Object.defineProperties(DepthPerspectiveFilter.prototype, {
         }
     }
 });
+
+export default DepthPerspectiveFilter;

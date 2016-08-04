@@ -1,4 +1,3 @@
-
 // Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 precision mediump float;
 
@@ -6,7 +5,6 @@ varying vec2 vTextureCoord;
 varying vec4 vColor;
 uniform sampler2D displacementMap;
 uniform sampler2D uSampler;
-uniform vec4 dimensions;
 uniform vec2 mapDimensions;
 uniform float scale;
 uniform vec2 offset;
@@ -70,7 +68,7 @@ uniform float enlarge;
 #define BRANCHLOOP
 #define BRANCHSAMPLE
 #define DEBUG 0
-//#define DEBUGBREAK 4
+// #define DEBUGBREAK 4
 
 #ifndef METHOD
 #define METHOD 1
@@ -100,7 +98,7 @@ float steps = MAXSTEPS;
 
 #ifdef COLORAVG
 float maskPower = steps * 2.0;// 32.0;
-#else 
+#else
 float maskPower = steps * 1.0;// 32.0;
 #endif
 float correctPower = 1.0;//max(1.0, steps / 8.0);
@@ -111,13 +109,13 @@ const float dmax = (1.0 + compression) / 2.0;
 
 const float vectorCutoff = 0.0 + dmin - 0.0001;
 
-float aspect = dimensions.x / dimensions.y;
+float aspect = mapDimensions.x / mapDimensions.y;
 vec2 scale2 = vec2( scale * min(1.0, 1.0 / aspect),
                     scale * min(1.0, aspect))
             * vec2(1, -1) * vec2(UPSCALE);
 
 // mat2 baseVector = mat2(vec2(-focus * offset) * scale2, vec2(offset - focus * offset) * scale2);
-mat2 baseVector = mat2(vec2((0.5 - focus) * offset - offset/2.0) * scale2, 
+mat2 baseVector = mat2(vec2((0.5 - focus) * offset - offset/2.0) * scale2,
         vec2((0.5 - focus) * offset + offset/2.0) * scale2);
 
 
@@ -170,12 +168,15 @@ void main(void) {
         #ifdef BRANCHLOOP
         if (dpos >= vectorCutoff && confidenceSum < CONFIDENCE_MAX) {
         #endif
-            float depth = 1.0 - texture2D(displacementMap, vpos * vec2(1, -1) + vec2(0, 1)).r;
+            //gyuri vec(1,-1)으로 곱해서 texture가 뒤집어져서 나와서 일단 바꿈
+            float depthTexValue = texture2D(displacementMap, vpos * vec2(1, 1) + vec2(0, 1)).r;
+            float depth = 1.0 - depthTexValue;
             depth = clamp(depth, dmin + 0.001, dmax); // add 0.001 for htc one+meth 1
             float confidence;
 
             #if METHOD == 1
             confidence = step(dpos, depth);
+            confidence = 1.0; //gyuri confidence가 자꾸 0으로 나와서 hotfix
 
             #elif METHOD == 3
             confidence = 1.0 - abs(dpos - depth);
@@ -203,8 +204,8 @@ void main(void) {
                 // confidence *= CONFIDENCE_MAX / 3.0;
 
                 #elif ANTIALIAS == 2 // go back halfstep, go forward fullstep - mult
-                j += 1.0 + step(AA_TRIGGER, confidence) 
-                    * step(i, j) * -1.5; 
+                j += 1.0 + step(AA_TRIGGER, confidence)
+                    * step(i, j) * -1.5;
                 // confidence *= CONFIDENCE_MAX / 3.0;
 
                 #elif ANTIALIAS == 11
@@ -257,7 +258,9 @@ void main(void) {
             gl_FragColor = vec4(confidence, depth, dpos, 0);
             #endif
 
-            #ifdef DEBUGBREAK 
+            gl_FragColor = vec4(0, depth, 0, 0);
+
+            #ifdef DEBUGBREAK
             if (i == float(DEBUGBREAK)) {
                 dstep = 1.0;
             }

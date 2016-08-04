@@ -1,2 +1,2 @@
 import './main.css';
-require('./components/app.js');
+import './components/app';

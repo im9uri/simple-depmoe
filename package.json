@@ -36,6 +36,7 @@
   "dependencies": {
     "images": "^3.0.0",
     "node-uuid": "^1.4.7",
+    "pixi": "^0.3.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7"
   }
