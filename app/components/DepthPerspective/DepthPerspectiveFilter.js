@@ -57,10 +57,10 @@ function DepthPerspectiveFilter(texture)
 
     PIXI.AbstractFilter.call(this,
         //vertex shader
-        // fs.readFileSync(__dirname + '/DepthPerspectiveFilter.vert', 'utf8'),
+        //fs.readFileSync(__dirname + '/DepMoeFilter2.vert', 'utf8'),
         null,
         //fragment shader
-        fs.readFileSync(__dirname + '/DepthPerspectiveFilter.frag', 'utf8'),
+        fs.readFileSync(__dirname + '/DepMoeFilter2.frag', 'utf8'),
         //uniforms
         this.uniforms
     );
